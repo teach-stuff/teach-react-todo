@@ -1,32 +1,60 @@
 import React, { useState } from 'react';
+import Item from './Item';
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [items, setItems] = useState('');
+
+  function addItem(e) {
+    e.preventDefault();
+    items !== ''
+      ? setTodos([{ name: items, completed: false }, ...todos])
+      : alert('Please enter an item');
+
+    setItems('');
+    console.log(todos);
+  }
 
   return (
     <div className="wrapper">
-      <button
+      {/* <button
         onClick={() =>
           setTodos([{ name: 'Buy apples', completed: false }, ...todos])
         }
       >
         Add todo
-      </button>
+      </button> */}
 
       <form>
-        <input type="text" className="todo-input" placeholder="Add item..." />
-        <button className="todo-button" type="submit">
+        <input
+          type="text"
+          onChange={(event) => setItems(event.target.value)}
+          value={items}
+          className="todo-input"
+          placeholder="Add item..."
+        />
+        <button
+          onClick={(event) => addItem(event)}
+          className="todo-button"
+          type="submit"
+        >
           +
         </button>
       </form>
 
       <ul className="todo-list">
-        {todos.map((todo) => (
-          <li className="complete">
-            <button className="done">&#10003;</button>
-            <span>{todo.name}</span>
-            <button className="delete">&#128465;</button>
-          </li>
+        {todos.map((todo, index) => (
+          <Item
+            todo={todo}
+            toggleCompleted={() => {
+              const updatedItem = { ...todo, completed: !todo.completed };
+              setTodos([
+                ...todos.slice(0, index),
+                updatedItem,
+                ...todos.slice(index + 1),
+              ]);
+            }}
+          />
         ))}
       </ul>
 
